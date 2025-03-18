@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ifemide: Cyber Bestie Apex</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        body {
+            background: #0D1B2A;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            color: #E0E1DD;
+            overflow-x: hidden;
+            padding: clamp(0.5rem, 2vw, 2rem);
+            overscroll-behavior: none;
+        }
+        .cyber-bg {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(145deg, #4169E1, #FF006E, #00FF9F, #FFD700, #FF4500, #9400D3);
+            background-size: 300% 300%;
+            animation: cyberShift 6s ease-in-out infinite;
+            opacity: 0.2;
+            filter: blur(clamp(20px, 5vw, 40px));
+            z-index: 0;
+            will-change: background-position;
+        }
+        @keyframes cyberShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; filter: brightness(1.3); }
+            100% { background-position: 0% 0%; }
+        }
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, rgba(255,0,110,0.1) 0%, transparent clamp(1px, 0.5vw, 2px));
+            opacity: 0.3;
+            animation: glitchFlicker 4s infinite steps(10);
+            z-index: 1;
+            pointer-events: none;
+        }
+        @keyframes glitchFlicker {
+            0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+            20% { transform: translate(clamp(1px, 0.5vw, 2px), clamp(-0.5px, -0.25vw, -1px)); opacity: 0.5; }
+            40% { transform: translate(clamp(-0.5px, -0.25vw, -1px), clamp(1px, 0.5vw, 2px)); opacity: 0.2; }
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(0.5rem, 2vw, 1.5rem);
+            width: 100%;
+            max-width: clamp(16rem, 90vw, 50rem);
+            position: relative;
+            z-index: 2;
+            perspective: clamp(1000px, 50vw, 2000px);
+            padding: clamp(0.5rem, 2vw, 1rem);
+        }
+        .intro {
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 27, 42, 0.9);
+            display: grid;
+            place-items: center;
+            opacity: 1;
+            animation: introVanish 2s ease-out forwards;
+            z-index: 10;
+        }
+        @keyframes introVanish {
+            0% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+        .intro-text {
+            font-size: clamp(1.5rem, 8vw, 5rem);
+            color: #00FF9F;
+            text-shadow: 0 0 clamp(0.5rem, 2vw, 1rem) #FF006E, 0 0 clamp(1rem, 4vw, 2rem) #FFD700;
+            animation: holoPulse 1.5s cubic-bezier(0.5, 0, 0, 1) infinite;
+            letter-spacing: clamp(0.1em, 0.5vw, 0.15em);
+            will-change: transform, text-shadow;
+        }
+        @keyframes holoPulse {
+            0%, 100% { transform: scale(1); text-shadow: 0 0 clamp(0.5rem, 2vw, 1rem) #FF006E; }
+            50% { transform: scale(1.05); text-shadow: 0 0 clamp(0.75rem, 3vw, 1.5rem) #FF006E, 0 0 clamp(1.25rem, 5vw, 2.5rem) #FFD700; }
+        }
+        .prism {
+            width: clamp(3rem, 15vw, 8rem);
+            height: clamp(3rem, 15vw, 8rem);
+            position: absolute;
+            top: calc(-1 * clamp(4rem, 18vw, 10rem));
+            left: 50%;
+            transform: translateX(-50%);
+            transform-style: preserve-3d;
+            animation: prismSpin 7s ease-in-out infinite;
+            will-change: transform;
+        }
+        .prism-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 0, 110, 0.6);
+            border: clamp(0.1rem, 0.5vw, 0.15rem) solid #00FF9F;
+            box-shadow: 0 0 clamp(0.75rem, 3vw, 1.5rem) #FFD700;
+            display: grid;
+            place-items: center;
+            font-size: clamp(0.5rem, 2.5vw, 1.5rem);
+            color: #00FF9F;
+            text-shadow: 0 0 clamp(0.25rem, 1vw, 0.75rem) #FF006E;
+        }
+        .prism-face:nth-child(1) { transform: rotateY(0deg) translateZ(clamp(1.5rem, 7.5vw, 4rem)); }
+        .prism-face:nth-child(2) { transform: rotateY(120deg) translateZ(clamp(1.5rem, 7.5vw, 4rem)); }
+        .prism-face:nth-child(3) { transform: rotateY(240deg) translateZ(clamp(1.5rem, 7.5vw, 4rem)); }
+        @keyframes prismSpin {
+            0% { transform: translateX(-50%) rotateY(0deg); }
+            50% { transform: translateX(-50%) rotateY(180deg) scale(1.1); }
+            100% { transform: translateX(-50%) rotateY(360deg); }
+        }
+        .name {
+            font-size: clamp(1.25rem, 7vw, 4rem);
+            color: #FF006E;
+            text-shadow: 0 0 clamp(0.25rem, 1vw, 0.75rem) #00FF9F, 0 0 clamp(0.5rem, 2vw, 1rem) #FFD700;
+            animation: nameGlitch 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+            letter-spacing: clamp(0.05em, 0.3vw, 0.1em);
+            will-change: transform, opacity;
+        }
+        @keyframes nameGlitch {
+            0% { opacity: 0; transform: scale(0.85) translateY(clamp(1.5rem, 5vw, 3rem)); }
+            60% { transform: scale(1.08) translateY(clamp(-0.15rem, -0.5vw, -0.3rem)); }
+            80% { transform: scale(0.95) translateY(clamp(0.1rem, 0.3vw, 0.2rem)); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .letter {
+            font-family: 'Roboto Mono', monospace;
+            font-size: clamp(0.75rem, 3vw, 1.75rem);
+            line-height: 1.6;
+            background: rgba(13, 27, 42, 0.9);
+            padding: clamp(0.75rem, 3vw, 2rem);
+            border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
+            border: clamp(0.1rem, 0.5vw, 0.2rem) solid #00FF9F;
+            box-shadow: 0 0 clamp(0.75rem, 3vw, 1.5rem) #FF006E, inset 0 0 clamp(0.25rem, 1vw, 0.75rem) #FFD700;
+            opacity: 0;
+            animation: letterBeam 1.8s cubic-bezier(0.4, 0, 0.2, 1) 1.5s forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+            will-change: transform, opacity, box-shadow;
+            width: 100%;
+        }
+        .letter:hover {
+            transform: translateY(clamp(-0.25rem, -1vw, -0.5rem));
+            box-shadow: 0 0 clamp(1rem, 4vw, 2.5rem) #FF006E, inset 0 0 clamp(0.5rem, 2vw, 1rem) #FFD700;
+        }
+        @keyframes letterBeam {
+            0% { opacity: 0; transform: translateY(clamp(1rem, 4vw, 2rem)) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .highlight {
+            color: #FFD700;
+            animation: cyberGlow 1.2s ease-in-out infinite;
+            letter-spacing: clamp(0.05em, 0.3vw, 0.15em);
+        }
+        @keyframes cyberGlow {
+            0%, 100% { text-shadow: 0 0 clamp(0.25rem, 1vw, 0.5rem) #FFD700; }
+            50% { text-shadow: 0 0 clamp(0.5rem, 2vw, 1rem) #FFD700, 0 0 clamp(0.75rem, 3vw, 1.5rem) #FF006E; }
+        }
+        .sync-bar {
+            width: clamp(6rem, 40vw, 18rem);
+            height: clamp(1rem, 4vw, 2rem);
+            background: rgba(13, 27, 42, 0.95);
+            border: clamp(0.1rem, 0.5vw, 0.15rem) solid #00FF9F;
+            border-radius: clamp(1rem, 3vw, 2rem);
+            overflow: hidden;
+            margin-top: clamp(0.5rem, 2vw, 1.5rem);
+        }
+        .sync-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #FF006E, #00FF9F, #FFD700, #FF4500);
+            animation: ravePulse 1.5s infinite ease;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: width;
+        }
+        @keyframes ravePulse {
+            0%, 100% { filter: brightness(1) hue-rotate(0deg); }
+            50% { filter: brightness(1.7) hue-rotate(90deg); }
+        }
+        .orb {
+            width: clamp(3rem, 14vw, 8rem);
+            height: clamp(3rem, 14vw, 8rem);
+            background: radial-gradient(circle, #FF4500, #00FF9F, #FF006E);
+            border-radius: 50%;
+            margin-top: clamp(0.75rem, 2.5vw, 2rem);
+            margin-bottom: clamp(0.5rem, 2vw, 1rem);
+            display: grid;
+            place-items: center;
+            font-size: clamp(1rem, 5vw, 3rem);
+            color: #FFD700;
+            text-shadow: 0 0 clamp(0.25rem, 1vw, 0.75rem) #00FF9F;
+            animation: orbHover 2s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s ease;
+            will-change: transform, box-shadow;
+        }
+        .orb:hover, .orb.active {
+            transform: scale(1.15);
+            box-shadow: 0 0 clamp(1rem, 4vw, 2rem) #FFD700, 0 0 clamp(1.5rem, 6vw, 3rem) #FF006E;
+        }
+        @keyframes orbHover {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 clamp(0.75rem, 3vw, 1.5rem) #FF006E; }
+            50% { transform: scale(1.05); box-shadow: 0 0 clamp(1rem, 4vw, 2rem) #FFD700; }
+        }
+        .storm {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .spark {
+            position: absolute;
+            width: clamp(0.75rem, 3vw, 2rem);
+            height: clamp(0.75rem, 3vw, 2rem);
+            background: radial-gradient(circle, #00FF9F, transparent);
+            border-radius: 50%;
+            animation: sparkBurst 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes sparkBurst {
+            0% { opacity: 1; transform: scale(0) translate(0, 0); }
+            100% { opacity: 0; transform: scale(clamp(4, 15vw, 6)) translate(clamp(-7.5rem, calc(${Math.random() * 30 - 15}vw), 7.5rem), clamp(-7.5rem, calc(${Math.random() * 30 - 15}vh), 7.5rem)); }
+        }
+        .vibe {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.75rem, 4vw, 2.5rem);
+            color: #FF006E;
+            text-shadow: 0 0 clamp(0.25rem, 1vw, 0.75rem) #00FF9F;
+            animation: vibeRush 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes vibeRush {
+            0% { opacity: 0; transform: translateX(clamp(-25vw, -50vw, -15vw)) scale(0.8); }
+            50% { opacity: 1; transform: translateX(0) scale(1); }
+            100% { opacity: 0; transform: translateX(clamp(15vw, 50vw, 25vw)) scale(0.9); }
+        }
+        /* Media Queries for Fine-Tuning */
+        @media (max-width: 480px) {
+            .container { padding: clamp(0.25rem, 1vw, 0.5rem); }
+            .letter { line-height: 1.4; }
+            .intro-text { letter-spacing: clamp(0.05em, 0.3vw, 0.1em); }
+        }
+        @media (min-width: 1200px) {
+            .container { padding: clamp(1rem, 2vw, 2rem); }
+            .letter { font-size: clamp(1rem, 2vw, 1.75rem); }
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="cyber-bg"></div>
+    <div class="glitch-overlay"></div>
+    <div class="intro" id="intro">
+        <div class="intro-text">Yo, Ifemide!</div>
+    </div>
+    <div class="storm"></div>
+    <div class="container">
+        <div class="prism">
+            <div class="prism-face">Best</div>
+            <div class="prism-face">Crew</div>
+            <div class="prism-face">Ever</div>
+        </div>
+        <div class="name">Ifemide</div>
+        <div class="letter">
+            Yo, <span class="highlight">Ifemide</span>,<br>
+            You’re my <span class="highlight">cyber apex</span>—this is our dope-ass future link! 
+            <span class="highlight">Royal blue</span> kicks it, but we’re vibin’ through neon chaos. 
+            You’re my glitch-proof homie, my electric pulse, my squad that slays the grid.<br><br>
+            Say “dope” to spark the storm, tap the orb for a cyber rush—our sync’s hittin’ peak levels. 
+            You’re my neon king, my rave fam, my “we own this” crew. 
+            This is our apex—doper than dope, lit forever!<br><br>
+            —Your Holo Homie
+        </div>
+        <div class="sync-bar">
+            <div class="sync-fill" id="syncFill"></div>
+        </div>
+        <div class="orb" onmousedown="triggerStorm(true)" ontouchstart="triggerStorm(true)">💥</div>
+    </div>
+
+    <script>
+        // Responsive particles
+        const stormContainer = document.querySelector('.storm');
+        function spawnParticles() {
+            const particleCount = clamp(20, window.innerWidth / 20, 30); // Scales with screen width
+            for (let i = 0; i < particleCount; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.style.left = `${Math.random() * 100}vw`;
+                spark.style.top = `${Math.random() * 100}vh`;
+                spark.style.background = `radial-gradient(circle, ${['#FF006E', '#00FF9F', '#FFD700', '#FF4500'][Math.floor(Math.random() * 4)]}, transparent)`;
+                spark.style.animationDelay = `${Math.random() * 5}s`;
+                stormContainer.appendChild(spark);
+                setTimeout(() => spark.remove(), 1500);
+            }
+        }
+        spawnParticles();
+        setInterval(spawnParticles, 5000);
+
+        // Voice trigger
+        let recognition;
+        try {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.onresult = (event) => {
+                const said = event.results[0][0].transcript.toLowerCase();
+                if (said.includes('dope')) {
+                    updateSync(50);
+                    triggerStorm(true);
+                    const synth = new SpeechSynthesisUtterance('Dope vibes locked in');
+                    synth.pitch = 1.2;
+                    synth.rate = 0.9;
+                    window.speechSynthesis.speak(synth);
+                }
+            };
+            recognition.onerror = () => recognition.start();
+            recognition.start();
+        } catch (e) {
+            console.log('Speech recognition not supported, skipping...');
+        }
+
+        // Sync bar
+        let syncLevel = 0;
+        const syncFill = document.getElementById('syncFill');
+        function updateSync(amount) {
+            syncLevel = Math.min(100, syncLevel + amount);
+            syncFill.style.width = `${syncLevel}%`;
+            if (syncLevel >= 100) {
+                triggerStorm(true);
+            }
+        }
+
+        // Storm trigger
+        function triggerStorm(isDope = false) {
+            const orb = document.querySelector('.orb');
+            orb.classList.add('active');
+            setTimeout(() => orb.classList.remove('active'), 300);
+            const sparks = isDope ? 50 : 25;
+            const messages = ["Ifemide!", "Dope Crew", "Cyber King", "Apex Vibe", "Neon Us"];
+            for (let i = 0; i < sparks; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.style.left = `${Math.random() * 100}vw`;
+                spark.style.top = `${Math.random() * 100}vh`;
+                spark.style.background = `radial-gradient(circle, ${['#FF006E', '#00FF9F', '#FFD700', '#FF4500'][Math.floor(Math.random() * 4)]}, transparent)`;
+                spark.style.animationDelay = `${Math.random() * 0.5}s`;
+                stormContainer.appendChild(spark);
+                setTimeout(() => spark.remove(), 1500);
+            }
+            for (let i = 0; i < (isDope ? 20 : 10); i++) {
+                const vibe = document.createElement('div');
+                vibe.className = 'vibe';
+                vibe.innerText = messages[Math.floor(Math.random() * messages.length)];
+                vibe.style.left = `${Math.random() * 80 + 10}vw`; // Keeps vibes on-screen
+                vibe.style.top = `${Math.random() * 80 + 10}vh`;
+                vibe.style.animationDelay = `${Math.random() * 0.8}s`;
+                stormContainer.appendChild(vibe);
+                setTimeout(() => vibe.remove(), 2000);
+            }
+            updateSync(isDope ? 30 : 15);
+        }
+
+        // Auto sync boost
+        setInterval(() => updateSync(5), 6000);
+
+        // Touch event fallback
+        const orb = document.querySelector('.orb');
+        orb.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            triggerStorm(true);
+        });
+        orb.addEventListener('click', () => triggerStorm(true)); // Added click support
+
+        // Helper function for JS clamp
+        function clamp(min, val, max) {
+            return Math.min(Math.max(min, val), max);
+        }
+    </script>
+</body>
+</html>
